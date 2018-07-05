@@ -5,12 +5,30 @@ namespace Models;
 class App {
 
   protected $data = Array();
-  protected $url = 'https://en.wikipedia.org/w/api.php?action=query&format=json&prop=extracts&titles=Portugal&explaintext=1';
+  protected $url = 'https://en.wikipedia.org/w/api.php';
+  protected $aParams = array(
+    'action' => 'query',
+    'format' => 'json'
+  );
   protected $userAgent = 'MyTestApiScript';
   protected $contentType = 'application/json';
 
+  public function __construct($params) {
+    if (!empty($params)) {
+      $this->aParams['list'] = 'search';
+      $this->aParams['utf8'] = '1';
+      $this->aParams['srsearch'] = $params;
+    } else {
+      $page = 'Portugal';
+      $this->aParams['prop'] = 'extracts';
+      $this->aParams['titles'] = $page;
+      $this->aParams['explaintext'] = '1';
+    }
+  }
+
   public function makeCall() {
-    $ch = curl_init($this->url);
+
+    $ch = curl_init($this->url . '?' . http_build_query($this->aParams));
     curl_setopt_array($ch, array(
         CURLOPT_RETURNTRANSFER => TRUE,
         CURLOPT_USERAGENT => $this->userAgent,
@@ -25,22 +43,11 @@ class App {
         die(curl_error($ch));
     }
 
-    return json_decode($response);
+    $this->data = json_decode($response);
   }
 
   public function getData() {
-    $content = array();
-    $response = $this->makeCall();
-
-    $pages = (array) $response->query->pages;
-    foreach ($pages as $id => $page) {
-      $content = array(
-        'title' => $page->title,
-        'content' => $page->extract,
-      );
-    }
-
-    return $content;
+    return $this->data;
   }
 
 }

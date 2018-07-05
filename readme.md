@@ -1,14 +1,15 @@
 ## WikiAPI
 
-API initially created to consume WikiPedia content
+API initially created to consume WikiPedia content.
 
-## API Reference
+## Reference
 
-The API is initially returning content from the WikiPedia page of Portugal (https://en.wikipedia.org/wiki/Portugal).
+The application initially returns information from Portugal within WikiPedia.
 
-## Code Example
+If the user has to search for any term within the platform, just pass a 'search' parameter in the URL, as in the example below:
 
-Just run the index.php file to get the API return
+http://YOUR_URL/WikiApi/index.php?search=world%20cup%20russia%202018
+
 
 ## Contributors
 

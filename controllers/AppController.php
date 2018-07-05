@@ -10,16 +10,29 @@ use views\View as View;
 
 class AppController {
 
-  protected $data;
+  protected $params;
 
-  public function __construct() {
-    $app = new App();
-    $this->data = $app->getData();
+  public function setParams($params) {
+    $this->params = $params;
   }
 
-  public function call() {
+  public function index() {
     $view = new View;
-    return $view->render($this->data);
+    $app = new App($this->params);
+
+    try {
+      $app->makeCall();
+    } catch(Exception $e) {
+      throw new Exception("We were unable to return any results.");
+      die();
+    }
+
+    if (!empty($app->getData()->error)) {
+      echo 'An error occurred while the result was being generated, please try again later.';
+      die();
+    }
+
+    return $view->render((array) $app->getData()->query);
   }
 
 }
